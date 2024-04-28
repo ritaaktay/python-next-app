@@ -5,20 +5,34 @@
 
 import { useEffect, useState } from "react";
 import { Document } from "../../types/types";
+import DocumentPanel from "../../components/DocumentPanel";
 
-export default function Documents() {
-  const [documents, setDocuments] = useState([]);
+export default function Page() {
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [rerender, setRerender] = useState<boolean>(false);
 
   useEffect(() => {
-    const documents = fetch("http://localhost:5000/documents")
-      .then((response) => response.json())
+    const res = fetch("http://localhost:5000/documents")
+      .then((res) => res.json())
       .then((data) => {
+        console.log("Fetched documents");
         setDocuments(data);
       });
-  });
+  }, [rerender]);
 
-  const transformDate = (date: string) => {
-    return new Date(date).toLocaleDateString();
+  const forceRerender = () => {
+    setRerender(!rerender);
+  };
+
+  const updateDocument = (document: Document) => {
+    const newDocuments = documents.map((doc) => {
+      if (doc.id === document.id) {
+        console.log("Updating document with id: ", document.id);
+        return document;
+      }
+      return doc;
+    });
+    setDocuments(newDocuments);
   };
 
   return (
@@ -26,9 +40,11 @@ export default function Documents() {
       <h1>Documents</h1>
       {documents.map((document: Document) => (
         <div key={document.id}>
-          <h2>Title: {document.title}</h2>
-          <p>Body: {document.body}</p>
-          <p>Published: {transformDate(document.published_date)}</p>
+          <DocumentPanel
+            document={document}
+            rerenderParent={forceRerender}
+            updateDocument={updateDocument}
+          />
         </div>
       ))}
     </main>
