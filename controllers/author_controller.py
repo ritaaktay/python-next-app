@@ -3,7 +3,6 @@ from db.models import Author
 from sqlalchemy import select
 from db.engine import engine
 
-
 class AuthorController:
     def get_all(self):
         with Session(engine) as session, session.begin():
@@ -25,3 +24,5 @@ class AuthorController:
                 return None
             author.name = data.get('name', author.name)
             return author.to_dict()
+        
+author_controller = AuthorController()

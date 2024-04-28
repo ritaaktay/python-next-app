@@ -19,13 +19,20 @@ class DocumentController:
             documents = list(map(lambda document: document.to_dict(), result))
             return documents
         
+    def get_by_id(self, document_id):
+        with Session(engine) as session, session.begin():
+            document = session.query(Document).get(document_id)
+            if document is None:
+                return None
+            return document.to_dict()
+        
     def add(self, data):
         with Session(engine) as session, session.begin():
             document = Document(
-                title=data['title'], 
-                body=data['body'],
-                published_date=data['published_date'],
-                author = Author(name = data['author']['name'])
+                title=data["title"], 
+                body=data["body"],
+                published_date=data["published_date"],
+                author = Author(name = data["author"]["name"])
             )
             session.add(document)
             return document.to_dict()
@@ -49,3 +56,5 @@ class DocumentController:
                     session.flush()
                     document.author_id = author.id
             return document.to_dict()
+        
+document_controller = DocumentController()

@@ -4,14 +4,11 @@ from sqlalchemy.orm import Session
 from db.models import Document, Author
 from sqlalchemy import select
 from db.utils.green import green
-from controllers.document_controller import DocumentController
-from controllers.author_controller import AuthorController
+from controllers.document_controller import document_controller
+from controllers.author_controller import author_controller
 
 # https://flask.palletsprojects.com/en/3.0.x/
 app = Flask(__name__)
-
-document_controller = DocumentController()
-author_controller = AuthorController()
 
 # This function takes a greeting from the url path
 # And a name from the query string to greet user
