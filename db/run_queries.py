@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models import Document, Author
-from create_db import engine
+from engine import engine
 from utils.green import green
 
 # https://docs.sqlalchemy.org/en/20/orm/session_basics.html#framing-out-a-begin-commit-rollback-block
@@ -13,7 +13,6 @@ with Session(engine) as session, session.begin():
 
     query = select(Document).where(Document.title.in_(["First document", "Second document"]))
 
-
     # session.scalars returns a ScalarResult object which is iterable
     for document in session.scalars(query):
         green(document.title + " was authored by " + document.author.name)
@@ -24,7 +23,6 @@ with Session(engine) as session, session.begin():
     # JOIN
 
     # Put forth conditions on both tables
-    
     query = (
         select(Document)
         .join(Document.author)
@@ -100,3 +98,4 @@ with Session(engine) as session, session.begin():
     green(documents)
 
     session.commit()
+
