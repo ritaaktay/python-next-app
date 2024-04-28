@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from models import Document, Author
 
 # The Session object uses the engine to interact with the database
+# https://docs.sqlalchemy.org/en/20/orm/session_basics.html#what-does-the-session-do
 # Using with is recommended to ensure session is closed after use
 with Session(engine) as session:
 

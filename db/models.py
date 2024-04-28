@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -26,6 +27,16 @@ class Document(Base):
     def __repr__(self) -> str:
         return f"Document(id={self.id!r}, title={self.title!r}, body={self.body!r})"
     
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "body": self.body,
+            "published_date": self.published_date,
+            "author_id": self.author_id,
+            "author": self.author.to_dict()
+        }
+    
 # Author class
 class Author(Base):
     __tablename__ = 'author'
@@ -40,3 +51,9 @@ class Author(Base):
     # Used for debugging
     def __repr__(self) -> str:
         return f"Author(id={self.id!r}, name={self.name!r})"
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }

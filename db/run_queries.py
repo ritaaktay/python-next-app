@@ -96,6 +96,3 @@ with Session(engine) as session, session.begin():
     query = select(Document)
     documents = session.scalars(query).all()
     green(documents)
-
-    session.commit()
-
