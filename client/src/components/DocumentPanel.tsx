@@ -15,13 +15,11 @@ const DocumentPanel = ({
 
   const [error, setError] = useState<string>("");
 
-  const transformDate = (date: string) => {
+  const transformDateDisplay = (date: string) => {
     return new Date(date).toLocaleDateString();
   };
 
-  const [date, setDate] = useState<string>(
-    transformDate(document.published_date)
-  );
+  const [date, setDate] = useState<string>(document.published_date);
 
   const togglePublishedDate = () => {
     setPublishedDateToggle(!publishedDateToggle);
@@ -37,7 +35,9 @@ const DocumentPanel = ({
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ published_date: date }),
+          body: JSON.stringify({
+            published_date: date,
+          }),
         }
       );
       if (res.ok) {
@@ -61,6 +61,7 @@ const DocumentPanel = ({
         <>
           <div style={{ display: "inline-block" }}>
             <input
+              type="date"
               onChange={(e) => setDate(e.target.value)}
               value={date}
             ></input>
@@ -79,7 +80,7 @@ const DocumentPanel = ({
       return (
         <>
           <div style={{ display: "inline-block" }}>
-            {`Published: ${transformDate(document.published_date)} `}
+            {`Published: ${transformDateDisplay(document.published_date)} `}
             <button onClick={togglePublishedDate}>Edit</button>
           </div>
           {error ? <p style={{ color: "red" }}>{error}</p> : null}
