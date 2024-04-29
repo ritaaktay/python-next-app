@@ -13,6 +13,8 @@ const DocumentPanel = ({
   const [publishedDateToggle, setPublishedDateToggle] =
     useState<boolean>(false);
 
+  const [error, setError] = useState<string>("");
+
   const transformDate = (date: string) => {
     return new Date(date).toLocaleDateString();
   };
@@ -48,6 +50,7 @@ const DocumentPanel = ({
         throw new Error(res.statusText);
       }
     } catch (e) {
+      setError("Error updating document, please try again");
       console.log("Error updating document", e);
     }
   };
@@ -55,24 +58,32 @@ const DocumentPanel = ({
   const PublishedDate = (document: Document) => {
     if (publishedDateToggle) {
       return (
-        <div style={{ display: "inline-block" }}>
-          <input onChange={(e) => setDate(e.target.value)} value={date}></input>
-          <button
-            onClick={() => {
-              submitPublishedDate();
-              togglePublishedDate();
-            }}
-          >
-            Submit
-          </button>
-        </div>
+        <>
+          <div style={{ display: "inline-block" }}>
+            <input
+              onChange={(e) => setDate(e.target.value)}
+              value={date}
+            ></input>
+            <button
+              onClick={() => {
+                submitPublishedDate();
+                togglePublishedDate();
+              }}
+            >
+              Submit
+            </button>
+          </div>
+        </>
       );
     } else {
       return (
-        <div style={{ display: "inline-block" }}>
-          {`Published: ${transformDate(document.published_date)} `}
-          <button onClick={togglePublishedDate}>Edit</button>
-        </div>
+        <>
+          <div style={{ display: "inline-block" }}>
+            {`Published: ${transformDate(document.published_date)} `}
+            <button onClick={togglePublishedDate}>Edit</button>
+          </div>
+          {error ? <p style={{ color: "red" }}>{error}</p> : null}
+        </>
       );
     }
   };

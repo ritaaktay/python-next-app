@@ -15,7 +15,6 @@ export default function Page() {
     const res = fetch("http://localhost:5000/documents")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched documents");
         setDocuments(data.sort((a: Document, b: Document) => a.id - b.id));
       });
   }, []);
@@ -28,7 +27,6 @@ export default function Page() {
   const updateDocument = (document: Document) => {
     const newDocuments = documents.map((doc) => {
       if (doc.id === document.id) {
-        console.log("Updating document with id: ", document.id);
         return document;
       }
       return doc;
