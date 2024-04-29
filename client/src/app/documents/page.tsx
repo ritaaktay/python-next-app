@@ -16,7 +16,7 @@ export default function Page() {
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched documents");
-        setDocuments(data);
+        setDocuments(data.sort((a: Document, b: Document) => a.id - b.id));
       });
   }, []);
   //   }, [rerender]);
