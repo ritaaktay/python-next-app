@@ -38,41 +38,41 @@ app.add_middleware(
 # to be Pydantic models should be taken from the request body.
 
 @app.get("/documents")
-def get_all_documents() -> list[DocumentBase] | Error:
-    with Session(engine) as session, session.begin():
+def get_all_documents(response: Response) -> list[DocumentResponse] | Error:
         try:
-            return document_controller.get_all()
+            documents = document_controller.get_all()
+            return documents
         except Exception as e:
-            return handle_exception(e)
+            return handle_exception(e, response)
 
 @app.get("/documents/{document_id}")
-def get_document_by_id(document_id) -> DocumentResponse | Error:
+def get_document_by_id(document_id, response: Response) -> DocumentResponse | Error:
     try: 
         document = document_controller.get_by_id(document_id)
         if document is None:
             return not_found()
         return document
     except Exception as e:
-        handle_exception(e)
+        handle_exception(e, response)
             
 # Add a document
 @app.post("/documents")
-def add_document(document: DocumentBase) -> DocumentBase | Error:
+def add_document(document: DocumentBase, response:Response) -> DocumentBase | Error:
     try:
         return document_controller.add(document.model_dump())
     except Exception as e:
-        return handle_exception(e)
+        return handle_exception(e, response)
 
 # Update a document
-@app.put("/documents/{document_id}", response_model= DocumentBase | Error)
-def update_document(document_id, document: DocumentUpdate):
+@app.put("/documents/{document_id}", response_model= DocumentResponse | Error)
+def update_document(document_id, document: DocumentUpdate, response: Response):
     try:
         document = document_controller.update(document.model_dump(), document_id)
         if document is None:
             return not_found()
         return document
     except Exception as e:
-        return handle_exception(e)
+          return handle_exception(e, response)
 
 # 404 Not found
 def not_found(response: Response):
@@ -81,5 +81,6 @@ def not_found(response: Response):
 
 # Exceptions
 def handle_exception(e, response: Response):
+    print("Handle exception")
     response.status_code = 500
     return {"error": repr(e)}
