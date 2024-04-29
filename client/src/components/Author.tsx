@@ -1,31 +1,24 @@
 import { useState } from "react";
 import { Document } from "../types/types";
 
-export const PublishedDate = ({
+export const Author = ({
   document,
   updateDocument,
-}: // renderParent,
-{
+}: {
   document: Document;
   updateDocument: (document: Document) => void;
-  // renderParent?: () => void;
 }) => {
-  const [publishedDateToggle, setPublishedDateToggle] =
-    useState<boolean>(false);
+  const [editToggle, setEditToggle] = useState<boolean>(false);
 
   const [error, setError] = useState<string>("");
 
-  const transformDateDisplay = (date: string) => {
-    return new Date(date).toLocaleDateString();
+  const [authorName, setAuthorName] = useState<string>(document.author.name);
+
+  const toggleEdit = () => {
+    setEditToggle(!editToggle);
   };
 
-  const [date, setDate] = useState<string>(document.published_date);
-
-  const togglePublishedDate = () => {
-    setPublishedDateToggle(!publishedDateToggle);
-  };
-
-  const submitPublishedDate = async () => {
+  const submitAuthor = async () => {
     try {
       const res = await fetch(
         `http://localhost:5000/documents/${document.id}`,
@@ -36,7 +29,9 @@ export const PublishedDate = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            published_date: date,
+            author: {
+              name: authorName,
+            },
           }),
         }
       );
@@ -54,32 +49,30 @@ export const PublishedDate = ({
       console.log("Error updating document", e);
     }
   };
-  if (publishedDateToggle) {
+
+  if (editToggle) {
     return (
-      <>
-        <div style={{ display: "inline-block" }}>
-          <input
-            type="date"
-            onChange={(e) => setDate(e.target.value)}
-            value={date}
-          ></input>
-          <button
-            onClick={() => {
-              submitPublishedDate();
-              togglePublishedDate();
-            }}
-          >
-            Submit
-          </button>
-        </div>
-      </>
+      <div style={{ display: "inline-block" }}>
+        <input
+          onChange={(e) => setAuthorName(e.target.value)}
+          value={authorName}
+        ></input>
+        <button
+          onClick={async () => {
+            await submitAuthor();
+            toggleEdit();
+          }}
+        >
+          Submit
+        </button>
+      </div>
     );
   } else {
     return (
       <>
         <div style={{ display: "inline-block" }}>
-          {`Published: ${transformDateDisplay(document.published_date)} `}
-          <button onClick={togglePublishedDate}>Edit</button>
+          {`Author: ${document.author.name} `}
+          <button onClick={toggleEdit}>Edit</button>
         </div>
         {error ? <p style={{ color: "red" }}>{error}</p> : null}
       </>

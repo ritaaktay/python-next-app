@@ -15,6 +15,7 @@ export default function Page() {
     const res = fetch("http://localhost:5000/documents")
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         setDocuments(data.sort((a: Document, b: Document) => a.id - b.id));
       });
   }, []);
