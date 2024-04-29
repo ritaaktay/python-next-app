@@ -6,7 +6,8 @@
 # https://fastapi.tiangolo.com/tutorial/
 
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from db.engine import engine
@@ -20,6 +21,17 @@ from controllers.document_controller import document_controller
 from controllers.author_controller import author_controller
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # FastAPI will recognize that the function parameters that match path parameters
 # should be taken from the path, and that function parameters that are declared 
@@ -63,9 +75,11 @@ def update_document(document_id, document: DocumentUpdate):
         return handle_exception(e)
 
 # 404 Not found
-def not_found():
+def not_found(response: Response):
+    response.status_code = 404
     return { "error": "Not found"}
 
 # Exceptions
-def handle_exception(e):
+def handle_exception(e, response: Response):
+    response.status_code = 500
     return {"error": repr(e)}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Document } from "../types/types";
+import { api } from "@/constants/api";
 
 export const PublishedDate = ({
   document,
@@ -27,19 +28,16 @@ export const PublishedDate = ({
 
   const submitPublishedDate = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/documents/${document.id}`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            published_date: date,
-          }),
-        }
-      );
+      const res = await fetch(`${api}/documents/${document.id}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          published_date: date,
+        }),
+      });
       if (res.ok) {
         const data = await res.json();
         // Update the array in parent component
@@ -64,8 +62,8 @@ export const PublishedDate = ({
             value={date}
           ></input>
           <button
-            onClick={() => {
-              submitPublishedDate();
+            onClick={async () => {
+              await submitPublishedDate();
               togglePublishedDate();
             }}
           >

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Document } from "../types/types";
+import { api } from "@/constants/api";
 
 export const Author = ({
   document,
@@ -19,25 +20,24 @@ export const Author = ({
   };
 
   const submitAuthor = async () => {
+    console.log("DOCUMENT ID IS", document);
     try {
-      const res = await fetch(
-        `http://localhost:5000/documents/${document.id}`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+      const res = await fetch(`${api}/documents/${document.id}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          author: {
+            name: authorName,
           },
-          body: JSON.stringify({
-            author: {
-              name: authorName,
-            },
-          }),
-        }
-      );
+        }),
+      });
       if (res.ok) {
         const data = await res.json();
         // Update the array in parent component
+        console.log(res);
         updateDocument(data);
         // Can also cause a re-render for parent component to fetch new data
         // rerenderParent();
@@ -45,8 +45,8 @@ export const Author = ({
         throw new Error(res.statusText);
       }
     } catch (e) {
-      setError("Error updating document, please try again");
-      console.log("Error updating document", e);
+      setError("Error updating author, please try again");
+      console.log("Error updating author", e);
     }
   };
 

@@ -11,6 +11,7 @@ const DocumentPanel = ({
   // rerenderParent: () => void;
   updateDocument: (document: Document) => void;
 }) => {
+  console.log(document);
   return (
     <div key={document.id} style={{ display: "flex", flexDirection: "column" }}>
       <h2>Title: {document.title}</h2>

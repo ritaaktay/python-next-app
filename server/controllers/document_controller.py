@@ -47,8 +47,8 @@ class DocumentController:
             document.published_date = data.get('published_date', document.published_date)
             # If author exists, point document to existing author
             # If not, create new author, point document to new author
-            name = data.get('author').get('name')
-            if name is not None:
+            if data.get('author') is not None:
+                name = data.get('author').get('name')   
                 query = select(Author).where(Author.name == name)
                 response = session.scalars(query).first()
                 if response:

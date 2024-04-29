@@ -6,13 +6,14 @@
 import { useEffect, useState } from "react";
 import { Document } from "../../types/types";
 import DocumentPanel from "../../components/DocumentPanel";
+import { api } from "@/constants/api";
 
 export default function Page() {
   const [documents, setDocuments] = useState<Document[]>([]);
   //   const [rerender, setRerender] = useState<boolean>(false);
 
   useEffect(() => {
-    const res = fetch("http://localhost:5000/documents")
+    const res = fetch(`${api}/documents`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
