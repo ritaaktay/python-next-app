@@ -9,7 +9,7 @@ import DocumentPanel from "../../components/DocumentPanel";
 
 export default function Page() {
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [rerender, setRerender] = useState<boolean>(false);
+  //   const [rerender, setRerender] = useState<boolean>(false);
 
   useEffect(() => {
     const res = fetch("http://localhost:5000/documents")
@@ -18,11 +18,12 @@ export default function Page() {
         console.log("Fetched documents");
         setDocuments(data);
       });
-  }, [rerender]);
+  }, []);
+  //   }, [rerender]);
 
-  const forceRerender = () => {
-    setRerender(!rerender);
-  };
+  //   const forceRerender = () => {
+  //     setRerender(!rerender);
+  //   };
 
   const updateDocument = (document: Document) => {
     const newDocuments = documents.map((doc) => {
@@ -42,7 +43,7 @@ export default function Page() {
         <div key={document.id}>
           <DocumentPanel
             document={document}
-            rerenderParent={forceRerender}
+            // rerenderParent={forceRerender}
             updateDocument={updateDocument}
           />
         </div>

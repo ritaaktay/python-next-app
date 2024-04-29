@@ -40,18 +40,21 @@ class DocumentController:
     def update(self, data, document_id):
         with Session(engine) as session, session.begin():
             document = session.query(Document).get(document_id)
+            if document is None:
+                return None
             document.title = data.get('title', document.title)
             document.body = data.get('body', document.body)
             document.published_date = data.get('published_date', document.published_date)
             # If author exists, point document to existing author
             # If not, create new author, point document to new author
-            if data["author"]:
-                query = select(Author).where(Author.name == data['author']['name'])
+            if data.get('author') is not None:
+                name = data.get('author').get('name')
+                query = select(Author).where(Author.name == name)
                 response = session.scalars(query).first()
                 if response:
                     document.author_id = response.id
                 else:
-                    author = Author(name = data['author']['name'])
+                    author = Author(name = name)
                     session.add(author)
                     session.flush()
                     document.author_id = author.id

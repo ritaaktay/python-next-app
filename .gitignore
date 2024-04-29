@@ -1,5 +1,5 @@
 # Server
-server/venv
+server/.venv
 server/__pycache__
 server/notes.txt
 

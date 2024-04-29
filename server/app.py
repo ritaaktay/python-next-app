@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, make_response, send_file, request
+from flask_cors import CORS
 from db.engine import engine
 from sqlalchemy.orm import Session
 from db.models import Document, Author
@@ -9,6 +10,7 @@ from controllers.author_controller import author_controller
 
 # https://flask.palletsprojects.com/en/3.0.x/
 app = Flask(__name__)
+CORS(app)
 
 # This function takes a greeting from the url path
 # And a name from the query string to greet user
@@ -56,7 +58,10 @@ def add_document():
 @app.route('/documents/<document_id>', methods=['PUT'])
 def update_document(document_id):
     try:
-        return jsonify(document_controller.update(request.json, document_id))
+        document = document_controller.update(request.json, document_id)
+        if document is None:
+            return not_found()
+        return jsonify(document)
     except Exception as e:
         return handle_exception(e)
 
@@ -90,7 +95,7 @@ def update_author(author_id):
 
 # 404 Not found
 def not_found():
-    res = jsonify({ "error": "Not found"})
+    res = {"error": "Not found"}
     res.status_code = 404
     return res
 

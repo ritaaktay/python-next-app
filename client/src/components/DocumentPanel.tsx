@@ -3,11 +3,11 @@ import { Document } from "../types/types";
 
 const DocumentPanel = ({
   document,
-  rerenderParent,
+  // rerenderParent,
   updateDocument,
 }: {
   document: Document;
-  rerenderParent: () => void;
+  // rerenderParent: () => void;
   updateDocument: (document: Document) => void;
 }) => {
   const [publishedDateToggle, setPublishedDateToggle] =
@@ -25,24 +25,38 @@ const DocumentPanel = ({
     setPublishedDateToggle(!publishedDateToggle);
   };
 
-  const submitPublishedDate = () => {
-    // Update current document in the database
-    // fetch(`http://localhost:5000/documents/${document.id}`, {
-    //   method: "PUT",
-    //   body: JSON.stringify({ published_date: date }),
-    // });
-    // Then cause a re-render for parent component
-    // rerenderParent();
-    // Or, knowing the database update succeeded
-    // We just update the array in parent component
-    // updateDocument(document);
+  const submitPublishedDate = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/documents/${document.id}`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ published_date: date }),
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        // Update the array in parent component
+        updateDocument(data);
+        // Can also cause a re-render for parent component to fetch new data
+        // rerenderParent();
+      } else {
+        throw new Error(res.statusText);
+      }
+    } catch (e) {
+      console.log("Error updating document", e);
+    }
   };
 
   const PublishedDate = (document: Document) => {
     if (publishedDateToggle) {
       return (
         <div style={{ display: "inline-block" }}>
-          <input value={date}></input>
+          <input onChange={(e) => setDate(e.target.value)} value={date}></input>
           <button
             onClick={() => {
               submitPublishedDate();
